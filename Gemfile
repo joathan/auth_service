@@ -47,6 +47,7 @@ group :development, :test do
   gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'guard-rspec'
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'rubocop-rails'

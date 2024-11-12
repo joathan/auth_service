@@ -51,13 +51,12 @@ group :development, :test do
   gem 'faker'
   gem 'guard-rspec'
   gem 'pry-rails'
-  gem 'rspec-rails'
-  gem 'rubocop-rails'
+  gem 'rspec'
   gem 'shoulda-matchers'
   gem 'simplecov'
 end
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  gem 'spring'
+  # gem 'spring'
 end

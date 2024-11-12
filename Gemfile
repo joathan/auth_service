@@ -49,6 +49,7 @@ group :development, :test do
   gem 'faker'
   gem 'pry-rails'
   gem 'rspec-rails'
+  gem 'rubocop-rails'
   gem 'shoulda-matchers'
   gem 'simplecov'
 end

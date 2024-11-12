@@ -51,7 +51,7 @@ group :development, :test do
   gem 'faker'
   gem 'guard-rspec'
   gem 'pry-rails'
-  gem 'rspec'
+  gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'simplecov'
 end

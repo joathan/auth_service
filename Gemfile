@@ -52,6 +52,7 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'pry-rails'
   gem 'rspec-rails'
+  gem 'rswag'
   gem 'shoulda-matchers'
   gem 'simplecov'
 end

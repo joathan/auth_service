@@ -1,36 +1,64 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'Api::V1::Auth', type: :request do
-  describe 'POST /api/v1/register' do
-    it 'creates a new user with valid parameters' do
-      post '/api/v1/register', params: { email: Faker::Internet.email, password: 'password123' }
+  path '/api/v1/register' do
+    post 'Register a new user' do
+      tags 'Auth'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          email: { type: :string, example: 'user@example.com' },
+          password: { type: :string, example: 'password123' }
+        },
+        required: %w[email password]
+      }
 
-      expect(response).to have_http_status(:created)
-    end
+      response '201', 'User created successfully' do
+        let(:user) { { email: Faker::Internet.email, password: 'password123' } }
+        run_test!
+      end
 
-    it 'returns error for invalid registration' do
-      post '/api/v1/register', params: { email: '', password: '' }
-
-      expect(response).to have_http_status(:unprocessable_entity)
+      response '422', 'Invalid parameters' do
+        let(:user) { { email: '', password: '' } }
+        run_test!
+      end
     end
   end
 
-  describe 'POST /api/v1/login' do
-    let(:user) { create(:user) }
+  path '/api/v1/login' do
+    post 'Login a user' do
+      tags 'Auth'
+      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :credentials, in: :body, schema: {
+        type: :object,
+        properties: {
+          email: { type: :string, example: 'user@example.com' },
+          password: { type: :string, example: 'password123' }
+        },
+        required: %w[email password]
+      }
 
-    it 'logs in a user with valid credentials' do
-      post '/api/v1/login', params: { email: user.email, password: 'password123' }
+      response '200', 'User logged in successfully' do
+        let(:user) { create(:user, password: 'password123') }
+        let(:credentials) { { email: user.email, password: 'password123' } }
 
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)).to have_key('token')
-    end
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data).to have_key('token')
+        end
+      end
 
-    it 'returns error for invalid login' do
-      post '/api/v1/login', params: { email: user.email, password: 'wrong_password' }
-
-      expect(response).to have_http_status(:unauthorized)
+      response '401', 'Invalid credentials' do
+        let(:user) { create(:user, password: 'password123') }
+        let(:credentials) { { email: user.email, password: 'wrong_password' } }
+        
+        run_test!
+      end
     end
   end
 end

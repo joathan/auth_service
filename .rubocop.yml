@@ -1,0 +1,21 @@
+require: 
+  - rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 3.3
+  Exclude:
+    - bin/**/*
+    - config/**/*
+    - db/schema.rb
+    - db/migrate/*.rb
+    - node_modules/**/*
+    - tmp/**/*
+    - db/schema.rb
+    - db/seeds.rb
+    - Guardfile
+    - ".*"
+  NewCops: enable
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

@@ -7,9 +7,11 @@ default: &default
   username: <%= ENV.fetch('DB_USER') { 'root' } %>
   password: <%= ENV.fetch('DB_PASSWORD') { 'password123' } %>
   host: <%= ENV.fetch('DB_HOST') { 'db' } %>
+  port: <%= ENV.fetch('DB_PORT') { 3306 } %>
 
 development:
   <<: *default
+  database: auth_service_development
 
 test:
   <<: *default

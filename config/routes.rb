@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post 'register', to: 'auth#register'
       post 'login', to: 'auth#login'
+      get 'verify_token', to: 'auth#verify_token'
     end
   end
 

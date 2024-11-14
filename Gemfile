@@ -46,6 +46,9 @@ gem 'jwt'
 # Nokogiri
 gem 'nokogiri', '~> 1.15', '>= 1.15.6', platforms: [:ruby]
 
+# Use dotenv to load environment variables from .env
+gem 'dotenv-rails'
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'database_cleaner'

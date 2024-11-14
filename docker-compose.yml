@@ -12,14 +12,21 @@ services:
       - "3306:3306"
 
   app:
+    stdin_open: true
+    platform: linux/x86_64
+    tty: true
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b '0.0.0.0'"
+    command: bash entrypoint.sh
     volumes:
       - .:/app
+      - bundle_cache:/usr/local/bundle
     ports:
       - "3000:3000"
     depends_on:
       - db
+    env_file:
+      - .env
 
 volumes:
   db_data:
+  bundle_cache:

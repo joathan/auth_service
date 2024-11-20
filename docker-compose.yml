@@ -1,34 +1,20 @@
 services:
-  db:
-    container_name: auth_db
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: password123
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - "3308:3306"
-    networks:
-      - app-network
-
   app:
     container_name: auth_service
     stdin_open: true
     platform: linux/x86_64
     tty: true
     build: .
-    command: bash entrypoint.sh
+    command: sh /app/entrypoint.sh
     volumes:
       - .:/app
       - bundle_cache:/usr/local/bundle
     ports:
       - "${APP_PORT:-3100}:3000"
-    depends_on:
-      - db
-    env_file:
-      - .env
     networks:
       - app-network
+    env_file:
+      - .env
 
 networks:
   app-network:
@@ -36,5 +22,4 @@ networks:
     external: true
 
 volumes:
-  db_data:
   bundle_cache:

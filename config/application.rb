@@ -43,5 +43,9 @@ module AuthService
 
     # Load lib files
     config.autoload_paths << Rails.root.join('lib')
+
+    # Middleware for cookies and session
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
   end
 end

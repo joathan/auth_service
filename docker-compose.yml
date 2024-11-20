@@ -1,17 +1,18 @@
-version: '3.8'
-
 services:
   db:
+    container_name: auth_db
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: password123
-      MYSQL_DATABASE: auth_service_development
     volumes:
       - db_data:/var/lib/mysql
     ports:
-      - "3306:3306"
+      - "3308:3306"
+    networks:
+      - app-network
 
   app:
+    container_name: auth_service
     stdin_open: true
     platform: linux/x86_64
     tty: true
@@ -21,11 +22,18 @@ services:
       - .:/app
       - bundle_cache:/usr/local/bundle
     ports:
-      - "3000:3000"
+      - "${APP_PORT:-3100}:3000"
     depends_on:
       - db
     env_file:
       - .env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    name: app-network
+    external: true
 
 volumes:
   db_data:

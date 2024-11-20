@@ -5,7 +5,7 @@ default: &default
   encoding: utf8
   pool: 5
   username: <%= ENV.fetch('DB_USER') { 'root' } %>
-  password: <%= ENV.fetch('DB_PASSWORD') { 'password123' } %>
+  password: <%= ENV.fetch('DB_PASSWORD') { 'root' } %>
   host: <%= ENV.fetch('DB_HOST') { 'db' } %>
   port: <%= ENV.fetch('DB_PORT') { 3306 } %>
 

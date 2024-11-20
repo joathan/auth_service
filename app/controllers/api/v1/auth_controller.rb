@@ -15,8 +15,12 @@ module Api
     
       def login
         user = User.find_by(email: params[:email])
+
         if user&.authenticate(params[:password])
           token = JsonWebToken.encode(user_id: user.id)
+
+          headers['Set-Cookie'] = "auth_token=#{token}; HttpOnly; Secure=#{Rails.env.production?}; SameSite=Lax"
+
           render json: { token: token }, status: :ok
         else
           render json: { error: 'Invalid email or password' }, status: :unauthorized

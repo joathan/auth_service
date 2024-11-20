@@ -33,3 +33,4 @@
 /config/master.key
 coverage
 .vscode/settings.json
+*.DS_Store

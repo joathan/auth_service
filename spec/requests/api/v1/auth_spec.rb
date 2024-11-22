@@ -98,6 +98,18 @@ RSpec.describe 'Api::V1::Auth', type: :request do
           expect(data['error']).to eq('Invalid or expired token')
         end
       end
+
+      response '401', 'User not found' do
+        let(:Authorization) do
+          token = JsonWebToken.encode(user_id: -1)
+          "Bearer #{token}"
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['error']).to eq('User not found')
+        end
+      end
     end
   end
 end

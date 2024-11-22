@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.1
 info:
-  title: API V1
+  title: API V1 Documentation for Auth
   version: v1
 paths:
   "/api/v1/register":
@@ -9,13 +9,13 @@ paths:
       summary: Register a new user
       tags:
       - Auth
-      parameters: []
       responses:
         '201':
           description: User created successfully
         '422':
           description: Invalid parameters
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -35,13 +35,21 @@ paths:
       summary: Login a user
       tags:
       - Auth
-      parameters: []
       responses:
         '200':
           description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
         '401':
           description: Invalid credentials
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -56,8 +64,42 @@ paths:
               required:
               - email
               - password
+  "/api/v1/verify_token":
+    get:
+      summary: Verify user token
+      tags:
+      - Auth
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+          description: Bearer token for authentication
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                    example: 1
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid or expired token
 servers:
-- url: https://{defaultHost}
+- url: http://{defaultHost}
   variables:
     defaultHost:
-      default: www.example.com
+      default: localhost:3100

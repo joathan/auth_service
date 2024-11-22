@@ -28,6 +28,7 @@ jobs:
       CI_DB_HOST: 127.0.0.1
       DB_USER: root
       DB_PASSWORD: root
+      SECRET_KEY_BASE: 1234567890
 
     steps:
       - name: Check out code

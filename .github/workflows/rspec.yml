@@ -1,0 +1,57 @@
+name: Run RSpec Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: your_test_database
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.0'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libmysqlclient-dev
+          bundle install --jobs 4 --retry 3
+
+      - name: Set up Database
+        env:
+          RAILS_ENV: test
+          DB_HOST: 127.0.0.1
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: |
+          cp config/database.yml.ci config/database.yml
+          rails db:create db:schema:load
+
+      - name: Run Tests
+        env:
+          RAILS_ENV: test
+        run: |
+          bundle exec rspec

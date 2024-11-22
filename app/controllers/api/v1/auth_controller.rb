@@ -29,18 +29,20 @@ module Api
 
       def verify_token
         token = request.headers['Authorization']&.split(' ')&.last
-        user_id = JsonWebToken.decode(token)[:user_id]
-        user = User.find_by(id: user_id)
-        
-        if user
-          render json: { user_id: user.id }, status: :ok
+        decoded_token = JsonWebToken.decode(token)
+
+        if decoded_token && decoded_token[:user_id]
+          user = User.find_by(id: decoded_token[:user_id])
+          if user
+            render json: { user_id: user.id }, status: :ok
+          else
+            render json: { error: 'User not found' }, status: :unauthorized
+          end
         else
-          render json: { error: 'Invalid token' }, status: :unauthorized
+          render json: { error: 'Invalid or expired token' }, status: :unauthorized
         end
-      rescue JWT::DecodeError
-        render json: { error: 'Invalid token' }, status: :unauthorized
       end
-    
+
       private
     
       def user_params

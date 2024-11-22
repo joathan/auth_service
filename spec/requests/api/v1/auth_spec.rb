@@ -56,8 +56,47 @@ RSpec.describe 'Api::V1::Auth', type: :request do
       response '401', 'Invalid credentials' do
         let(:user) { create(:user, password: 'password123') }
         let(:credentials) { { email: user.email, password: 'wrong_password' } }
-        
+
         run_test!
+      end
+    end
+  end
+
+  path '/api/v1/verify_token' do
+    get 'Verify user token' do
+      tags 'Auth'
+      produces 'application/json'
+      parameter name: :Authorization, in: :header, type: :string, required: true
+
+      response '200', 'Token is valid' do
+        let(:user) { create(:user) }
+        let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['user_id']).to eq(user.id)
+        end
+      end
+
+      response '401', 'Token is invalid' do
+        let(:Authorization) { 'Bearer invalid_token' }
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['error']).to eq('Invalid or expired token')
+        end
+      end
+
+      response '401', 'Token is expired' do
+        let(:Authorization) do
+          expired_token = JsonWebToken.encode({ user_id: 1 }, 1.second.ago)
+          "Bearer #{expired_token}"
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)
+          expect(data['error']).to eq('Invalid or expired token')
+        end
       end
     end
   end

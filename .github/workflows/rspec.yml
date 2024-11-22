@@ -45,7 +45,6 @@ jobs:
           DB_USERNAME: root
           DB_PASSWORD: root
         run: |
-          cp config/database.yml.ci config/database.yml
           rails db:create db:schema:load
 
       - name: Run Tests

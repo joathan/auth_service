@@ -6,7 +6,7 @@ default: &default
   pool: 5
   username: <%= ENV.fetch('DB_USER') { 'root' } %>
   password: <%= ENV.fetch('DB_PASSWORD') { 'root' } %>
-  host: <%= ENV.fetch('DB_HOST') { 'db' } %>
+  host: <%= ENV['CI_DB_HOST'] || ENV.fetch('DB_HOST', '127.0.0.1') %>
   port: <%= ENV.fetch('DB_PORT') { 3306 } %>
 
 development:

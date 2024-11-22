@@ -13,7 +13,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: your_test_database
+          MYSQL_DATABASE: auth_service_test
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
@@ -22,6 +22,12 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      CI_DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: root
 
     steps:
       - name: Check out code
@@ -39,16 +45,9 @@ jobs:
           bundle install --jobs 4 --retry 3
 
       - name: Set up Database
-        env:
-          RAILS_ENV: test
-          DB_HOST: 127.0.0.1
-          DB_USERNAME: root
-          DB_PASSWORD: root
         run: |
           rails db:create db:schema:load
 
       - name: Run Tests
-        env:
-          RAILS_ENV: test
         run: |
           bundle exec rspec
